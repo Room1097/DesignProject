@@ -1,4 +1,4 @@
-function [qx, qy] = recover_polynomials(shadow_images)
+function [qx, qy] = recover_polynomials(t,shadow_images)
     % Initialize the output polynomials
     qx = cell(256, 1);
     qy = cell(256, 1);
@@ -8,10 +8,15 @@ function [qx, qy] = recover_polynomials(shadow_images)
 
     for row = 0:22
         for col = 0:22
+            if row == 22 && col == 6
+                break;
+            end
             if mod(row, 2) == 0
-                index = (row * 23 + col) / 2 + 1;
+                index = floor((row * 23 + col) / 2) + 1;
+                disp(index);
             else
-                index = (row * 23 + col + 1) / 2 + 1;
+                index = floor((row * 23 + col + 1) / 2) + 1;
+                disp(index);
             end
 
             if mod(col, 2) == 0
@@ -20,9 +25,9 @@ function [qx, qy] = recover_polynomials(shadow_images)
                 qy{index} = 0;
             end
 
-            for i = 1:length(shadow_images)
+            for i = 1:t
                 temp = 1;
-                for j = 1:length(shadow_images)
+                for j = 1:t
                     if i ~= j
                         temp = temp * (z - shadow_images{j}(23, 23)) / (shadow_images{i}(23, 23) - shadow_images{j}(23, 23));
                     end
@@ -34,10 +39,6 @@ function [qx, qy] = recover_polynomials(shadow_images)
                 else
                     qy{index} = qy{index} + temp;
                 end
-            end
-
-            if row == 22 && col == 6
-                break;
             end
         end
     end

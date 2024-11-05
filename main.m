@@ -1,8 +1,8 @@
 %main script as an command centre
 
 % Read the grayscale image
-img = imread("input_image16.png");
-
+img = imread("input_image8.png");
+% img = double(img);
 
 [Spx, Spy, np] = find_pixel_coordinates(img);
 
@@ -35,6 +35,7 @@ t = max_np + 1;   % Threshold number of shares needed for reconstruction
 %imshow(uint8(reconstructed_image));
 % Save the reconstructed image as a .tif file
 %imwrite(uint8(reconstructed_image), 'reconstructed_image.tif');
+diary('output.txt'); % Start recording output to a file
 
 prime = nextprime(n + max_np);
 
@@ -47,14 +48,20 @@ shadow_images = generate_shadow_images(qx, qy, n, max_np, prime);
 %     imwrite(uint8(shadow_images{i}), filename);
 % end
 
-% [Qx, Qy] = recover_polynomials(shadow_images);
-[Qx, Qy] = reconstructPolynomials(t, shadow_images, n, prime);
-% disp(Qy);
-% disp(Qx);
+ [Qx, Qy] = reconstructPolynomials(t,shadow_images);
+% [Qx, Qy] = reconstructPolynomials(t, shadow_images, n, prime);
+for i = 1:256
+    disp(['Qx(', num2str(i), '):']);
+    disp(Qx{i});
+    disp(['Qy(', num2str(i), '):']);
+    disp(Qy{i});
+end
 
-reconstructed_image = reconstructImage2(Qx,Qy,np,16);
+reconstructed_image = reconstructImage2(Qx,Qy,np,8);
 
-image1 = imread('input_image16.png');
+image1 = imread('input_image8.png');
 image2 = imread('reconstructed_image.png');
 
 difference_image = pixel_wise_comparison(image1, image2);
+
+diary off; % Stop recording
