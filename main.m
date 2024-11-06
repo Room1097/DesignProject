@@ -63,5 +63,5 @@ image1 = imread('input_image8.png');
 image2 = imread('reconstructed_image.png');
 
 difference_image = pixel_wise_comparison(image1, image2);
-
+%test
 diary off; % Stop recording
