@@ -4,6 +4,8 @@
 img = imread("input_image8.png");
 % img = double(img);
 
+
+
 [Spx, Spy, np] = find_pixel_coordinates(img);
 
 bar(0:255, np);
