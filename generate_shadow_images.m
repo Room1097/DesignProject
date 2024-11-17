@@ -10,7 +10,7 @@ function shadow_images = generate_shadow_images(qx, qy, n, max_np, ~)
     shadow_images = cell(n, 1);
 
     % Generate each shadow image
-    for i = 1:n
+    for i = 1 + max_np:n + max_np
         shadow_images{i} = zeros(23, 23); % Initialize a 23x23 matrix
         row = 1;
         col = 1;
@@ -27,14 +27,14 @@ function shadow_images = generate_shadow_images(qx, qy, n, max_np, ~)
             disp(qyj);
 
             % Store the finite field results in the shadow image matrix
-            shadow_images{i }(row, col) = qxj;
+            shadow_images{i - max_np}(row, col) = qxj;
             col = mod(col, 23) + 1;
 
             if col == 1
                 row = row + 1;
             end
 
-            shadow_images{i }(row, col) = qyj;
+            shadow_images{i - max_np}(row, col) = qyj;
             col = mod(col, 23) + 1;
 
             % Move to the next row if we reach the end of the current row
@@ -44,11 +44,11 @@ function shadow_images = generate_shadow_images(qx, qy, n, max_np, ~)
         end
 
         % Store the evaluation point in the last element for reference
-        shadow_images{i}(23, 23) = i;
+        shadow_images{i - max_np}(23, 23) = i;
 
         % Save the shadow image as an actual image file
         % Normalize to fit in an 8-bit image range if within [0, 255]
-        shadow_img_normalized = uint8(mod(shadow_images{i}, 256));
-        imwrite(shadow_img_normalized, sprintf('shadow_image_%d.png', i));
+        shadow_img_normalized = uint8(mod(shadow_images{i - max_np}, 256));
+        imwrite(shadow_img_normalized, sprintf('shadow_image_%d.png', i - max_np));
     end
 end

@@ -18,7 +18,7 @@
 
 % reconstructed_image = reconstruct_image(Spx, Spy);
 % 
-img = imread('input_image8.png');
+img = imread('baboon.tif');
 % [Spx, Spy, np] = find_pixel_coordinates(img);
 % reconstructed_image = reconstruct_image(Spx, Spy);
 % Display the reconstructed image
@@ -26,12 +26,28 @@ img = imread('input_image8.png');
 % Save the reconstructed image as a .tif file
 % imwrite(uint8(reconstructed_image), 'reconstructed_image.png');
 % 
-image2 = imread('reconstructed_image.png');
-disp(img);
-disp(image2);
-% 
-difference_image = pixel_wise_comparison(img, image2);
-% 
+% image2 = imread('reconstructed_image.png');
+
+% disp(img);
+% disp(image2);
+% % 
+% difference_image = pixel_wise_comparison(img, image2);
+
+b = histeq(img,256);
+[Spx, Spy, np] = find_pixel_coordinates(img);
+[Spa, Spb, val] = find_pixel_coordinates(b);
+figure
+bar(0:255, np);
+xlabel('Grayscale Value');
+ylabel('Frequency');
+title('Pixel Value Frequency Distribution');
+
+figure
+bar(0:255, val);
+xlabel('Grayscale Value');
+ylabel('Frequency');
+title('Pixel Value Frequency Distribution');
+ 
 % [Spx, Spy, np] = find_pixel_coordinates(difference_image);
 % figure
 % bar(0:255, np);

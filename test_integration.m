@@ -1,11 +1,11 @@
 % Function to add noise to an 8x8 input image using modular arithmetic
 function noisyImage = add_noise(inputImage, noise)
     % Initialize noisy image
-    noisyImage = zeros(8, 8, 'uint8');    % Updated to 8x8
+    noisyImage = zeros(32, 32, 'uint8');    % Updated to 8x8
 
     % Add noise to each pixel using modular arithmetic
-    for i = 1:8   % Update loop to 8x8
-        for j = 1:8   % Update loop to 8x8
+    for i = 1:32   % Update loop to 8x8
+        for j = 1:32   % Update loop to 8x8
             % Step 1: Add the original image pixel and the noise
             sumPixel = int32(inputImage(i, j)) + int32(noise(i, j));  % Use int32 for addition
             
@@ -21,11 +21,11 @@ end
 
 % Function to remove noise from an 8x8 noisy image to reconstruct the original image
 function reconstructedImage = remove_noise(noisyImage, noise)
-    reconstructedImage = zeros(8, 8, 'uint8');  % Initialize reconstructed image
+    reconstructedImage = zeros(32, 32, 'uint8');  % Initialize reconstructed image
 
     % Remove noise from each pixel using modular subtraction
-    for i = 1:8   % Update loop to 8x8
-        for j = 1:8   % Update loop to 8x8
+    for i = 1:32   % Update loop to 8x8
+        for j = 1:32   % Update loop to 8x8
             % Step 1: Subtract the noise from the noisy image pixel
             diffPixel = int32(noisyImage(i, j)) - int32(noise(i, j));  % Use int32 for subtraction
             
@@ -44,7 +44,7 @@ end
 %main script as an command centre
 
 % Read the grayscale image
-img = imread("input_image8.png");
+img = imread("save32.png");
 % img = double(img);
 
 if size(img, 3) == 3
@@ -54,7 +54,7 @@ end
 disp('Original Image:');
 disp(img);
 
-noise = uint8(randi([0, 255], 8, 8));
+noise = uint8(randi([0, 255], 32, 32));
 
 noisyImage = add_noise(inputImage, noise);
 disp('Noisy Image (after adding noise to original):');
@@ -116,12 +116,38 @@ for i = 1:256
     disp(Qy{i});
 end
 
-reconstructed_image = reconstructImage2(Qx,Qy,np,8);
+reconstructed_image = reconstructImage2(Qx,Qy,np,32);
 reconstructed_noise_less_image = remove_noise(noisyImage, noise);
 
-image1 = imread('input_image8.png');
+image1 = imread('save32.png');
 image2 = imread('reconstructed_image.png');
 
 difference_image = pixel_wise_comparison(image1, reconstructed_noise_less_image);
 %test
 diary off; % Stop recording
+
+
+inputImageDisplay = im2double(inputImage);
+noiseDisplay = double(noise) / 255;
+noisyImageDisplay = double(noisyImage) / 255;
+reconstructedImageDisplay = double(reconstructedImage) / 255;
+
+figure;
+subplot(2, 2, 1);
+imhist(inputImageDisplay);
+title('Original Image Histogram');
+subplot(2, 2, 2);
+imhist(noiseDisplay);
+title('Noise Image Histogram');
+subplot(2, 2, 3);
+imhist(noisyImageDisplay);
+title('Noisy Image Histogram');
+subplot(2, 2, 4);
+imhist(reconstructedImageDisplay);
+title('Reconstructed Image Histogram');
+
+% Optional: Define and display pixel-wise difference if not defined elsewhere
+difference_image = abs(int32(inputImage) - int32(reconstructedImage));
+figure;
+imshow(difference_image, []);
+title('Difference Image');
